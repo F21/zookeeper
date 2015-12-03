@@ -23,9 +23,10 @@ RUN apt-get install -y ca-certificates maven\
     && mkdir -p /var/lib/zookeeper/data
 
 ADD exhibitor.properties /opt/exhibitor/exhibitor.properties
+ADD run-exhibitor.sh /opt/exhibitor/run-exhibitor.sh
 
 EXPOSE 2181 2888 3888 8080
 
 WORKDIR /opt/exhibitor
 
-ENTRYPOINT ["java", "-jar", "exhibitor.jar", "--hostname", "$(awk 'NR==1 {print $1}' /etc/hosts)", "--defaultconfig", "/opt/exhibitor/exhibitor.properties", "-c"]
+ENTRYPOINT ["/opt/exhibitor/run-exhibitor.sh"]
