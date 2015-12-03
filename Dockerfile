@@ -4,7 +4,7 @@ FROM f21global/java:8
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 
 ENV EXHIBITOR_VER 1.5.5
-ENV ZOOKEEPER_VER 3.4.6
+ENV ZOOKEEPER_VER 3.4.7
 
 RUN apt-get update \
     && apt-get install -y wget \
