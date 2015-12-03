@@ -1,28 +1,31 @@
 # Zookeeper 3.4.6
 
-FROM ubuntu:14.04
+FROM f21global/java:8
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 
+ENV EXHIBITOR_VER 1.5.5
+ENV ZOOKEEPER_VER 3.4.6
+
 RUN apt-get update \
-    && apt-get install -y software-properties-common wget \
-    && add-apt-repository ppa:webupd8team/java \
-    && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
-    && apt-get update && apt-get install -y oracle-java8-installer oracle-java8-set-default \
-    && apt-get purge --auto-remove software-properties-common -y
+    && apt-get install -y wget \
+    && wget -q -O - http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-${ZOOKEEPER_VER}/zookeeper-${ZOOKEEPER_VER}.tar.gz | tar -xzf - -C /opt \
+    && mv /opt/zookeeper-${ZOOKEEPER_VER} /opt/zookeeper
 
-RUN wget -q -O - http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz | tar -xzf - -C /opt \
-    && mv /opt/zookeeper-3.4.6 /opt/zookeeper \
-    && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg \
-    && mkdir -p /var/lib/zookeeper \
-    && sed -i 's/dataDir=\/tmp\/zookeeper/dataDir=\/var\/lib\/zookeeper/g' /opt/zookeeper/conf/zoo.cfg
+RUN apt-get install -y ca-certificates maven\
+    && mkdir -p /tmp/exhibitor \
+    && wget -O /tmp/exhibitor/pom.xml https://raw.githubusercontent.com/Netflix/exhibitor/v${EXHIBITOR_VER}/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml \
+    && cd /tmp/exhibitor \
+    && mvn clean package \
+    && mkdir -p /opt/exhibitor \
+    && mv /tmp/exhibitor/target/exhibitor-1.0.jar /opt/exhibitor/exhibitor.jar \
+    && rm -rf /tmp/exhibitor \
+    && apt-get purge --auto-remove maven -y \
+    && mkdir -p /var/lib/zookeeper/data
 
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ADD exhibitor.properties /opt/exhibitor/exhibitor.properties
 
-EXPOSE 2181 2888 3888
+EXPOSE 2181 2888 3888 8080
 
-WORKDIR /opt/zookeeper
+WORKDIR /opt/exhibitor
 
-VOLUME ["/opt/zookeeper/conf", "/var/lib/zookeeper"]
-
-ENTRYPOINT ["/opt/zookeeper/bin/zkServer.sh"]
-CMD ["start-foreground"]
+ENTRYPOINT ["java", "-jar", "exhibitor.jar", "--hostname", "$(awk 'NR==1 {print $1}' /etc/hosts)", "--defaultconfig", "/opt/exhibitor/exhibitor.properties", "-c"]
