@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-CMD="java -jar exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties"
+CMD="java -jar exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"
 
-if ["$CONFIGTYPE" -eq "file"]; then
+if [ "$CONFIGTYPE" = "file" ]; then
 
     CMD=$CMD" --configtype file"
     CMD=$CMD${FSCONFIGDIR:+" --fsconfigdir $FSCONFIGDIR"}
     CMD=$CMD${FSCONFIGLOCKPREFIX:+" --fsconfiglockprefix $FSCONFIGLOCKPREFIX"}
     CMD=$CMD${FSCONFIGNAMEX:+" --fsconfigname $FSCONFIGNAME"}
 
-elif ["$CONFIGTYPE" -eq "s3"]; then
+elif [ "$CONFIGTYPE" = "s3" ]; then
 
     CMD=$CMD" --configtype s3"
     CMD=$CMD${S3CREDENTIALS:+" --s3credentials $S3CREDENTIALS"}
@@ -17,7 +17,7 @@ elif ["$CONFIGTYPE" -eq "s3"]; then
     CMD=$CMD${S3CONFIG:+" --s3config $S3CONFIG"}
     CMD=$CMD${S3CONFIGPREFIX:+" --s3configprefix $S3CONFIGPREFIX"}
 
-elif ["$CONFIGTYPE" -eq "zookeeper"];then
+elif [ "$CONFIGTYPE" = "zookeeper" ];then
 
     : ${ZKCONFIGCONNECT:?"ZKCONFIGCONNECT is required for the zookeeper configtype"}
     : ${ZKCONFIGZPATH:?"ZKCONFIGZPATH is required for the zookeeper configtype"}
@@ -35,7 +35,6 @@ fi
 
 CMD=$CMD${CONFIGCHECKMS:+" --configcheckms $CONFIGCHECKMS"}
 CMD=$CMD${HEADINGTEXT:+" --headingtext $HEADINGTEXT"}
-CMD=$CMD${HOSTNAME:=" --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"}
 CMD=$CMD${JQUERYSTYLE:+" --jquerystyle $JQUERYSTYLE"}
 CMD=$CMD${LOGLINES:+" --loglines $LOGLINES"}
 CMD=$CMD${NODEMODIFICATION:+" --nodemodification $NODEMODIFICATION"}
@@ -60,7 +59,7 @@ echo "zookeeper-data-directory=${ZOOKEEPER_DATA_DIRECTORY:=/var/lib/zookeeper/da
 echo ${ZOOKEEPER_LOG_DIRECTORY:+"zookeeper-log-directory=$ZOOKEEPER_LOG_DIRECTORY"} >> /opt/exhibitor/exhibitor.properties
 echo ${SERVERS_SPEC:+"servers-spec=$SERVERS_SPEC"} >> /opt/exhibitor/exhibitor.properties
 echo ${BACKUP_EXTRA:+"backup-extra=$BACKUP_EXTRA"} >> /opt/exhibitor/exhibitor.properties
-echo "zookeeper-cfg-extra=${ZOO_CFG_EXTRA:=syncLimit\=5\&tickTime\=2000\&initLimit\=10}" >> /opt/exhibitor/exhibitor.properties
+echo "zoo-cfg-extra=${ZOO_CFG_EXTRA:=syncLimit\=5\&tickTime\=2000\&initLimit\=10}" >> /opt/exhibitor/exhibitor.properties
 echo "java-environment=${JAVA_ENVIRONMENT:=export JAVA_OPTS\=\"-Xms1000m -Xmx1000m\"}" >> /opt/exhibitor/exhibitor.properties
 echo ${LOG4J_PROPERTIES:+"log4j-properties=$LOG4J_PROPERTIES"} >> /opt/exhibitor/exhibitor.properties
 echo "client-port=${CLIENT_PORT:=2181}" >> /opt/exhibitor/exhibitor.properties
