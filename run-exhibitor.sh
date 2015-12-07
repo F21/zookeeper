@@ -54,6 +54,8 @@ CMD=$CMD${ACLID:+" --aclid $ACLID"}
 CMD=$CMD${ACLPERMS:+" --aclperms $ACLPERMS"}
 CMD=$CMD${ACLSCHEME:+" --aclscheme $ACLSCHEME"}
 
+rm -f /opt/exhibitor/exhibitor.properties
+
 echo ${LOG_INDEX_DIRECTORY:+"log-index-directory=$LOG_INDEX_DIRECTORY"} >> /opt/exhibitor/exhibitor.properties
 echo "zookeeper-data-directory=${ZOOKEEPER_DATA_DIRECTORY:=/var/lib/zookeeper/data}" >> /opt/exhibitor/exhibitor.properties
 echo ${ZOOKEEPER_LOG_DIRECTORY:+"zookeeper-log-directory=$ZOOKEEPER_LOG_DIRECTORY"} >> /opt/exhibitor/exhibitor.properties
