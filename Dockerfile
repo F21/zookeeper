@@ -22,7 +22,6 @@ RUN apt-get install -y ca-certificates maven\
     && apt-get purge --auto-remove maven -y \
     && mkdir -p /var/lib/zookeeper/data
 
-ADD exhibitor.properties /opt/exhibitor/exhibitor.properties
 ADD run-exhibitor.sh /opt/exhibitor/run-exhibitor.sh
 
 EXPOSE 2181 2888 3888 8080
