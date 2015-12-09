@@ -29,4 +29,4 @@ EXPOSE 2181 2888 3888 8080
 
 WORKDIR /opt/exhibitor
 
-ENTRYPOINT ["/opt/exhibitor/run-exhibitor.sh"]
+CMD ["/opt/exhibitor/run-exhibitor.sh"]
