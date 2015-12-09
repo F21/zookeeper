@@ -1,4 +1,4 @@
-# Zookeeper 3.4.6
+# Zookeeper 3.4.7
 
 FROM f21global/java:8
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
