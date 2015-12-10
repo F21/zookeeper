@@ -87,4 +87,4 @@ PID=$!
 wait $PID
 trap - TERM INT
 wait $PID
-exit $?
+exit 0
