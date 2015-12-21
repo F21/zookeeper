@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CMD="java -jar exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"
+CMD="-jar exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"
 
 if [ "$CONFIGTYPE" = "file" ]; then
 
@@ -8,6 +8,8 @@ if [ "$CONFIGTYPE" = "file" ]; then
     CMD=$CMD${FSCONFIGDIR:+" --fsconfigdir $FSCONFIGDIR"}
     CMD=$CMD${FSCONFIGLOCKPREFIX:+" --fsconfiglockprefix $FSCONFIGLOCKPREFIX"}
     CMD=$CMD${FSCONFIGNAMEX:+" --fsconfigname $FSCONFIGNAME"}
+
+    chown -R zookeeper:zookeeper $FSCONFIGDIR
 
 elif [ "$CONFIGTYPE" = "s3" ]; then
 
@@ -79,4 +81,4 @@ echo "observer-threshold=${OBSERVER_THRESHOLD:=3}" >> /opt/exhibitor/exhibitor.p
 echo ${AUTO_MANAGE_INSTANCES_FIXED_ENSEMBLE_SIZE:+"auto-manage-instances-fixed-ensemble-size=$AUTO_MANAGE_INSTANCES_FIXED_ENSEMBLE_SIZE"} >> /opt/exhibitor/exhibitor.properties
 echo ${AUTO_MANAGE_INSTANCES_APPLY_ALL_AT_ONCE:+"auto-manage-instances-apply-all-at-once=$AUTO_MANAGE_INSTANCES_APPLY_ALL_AT_ONCE"} >> /opt/exhibitor/exhibitor.properties
 
-exec gosu zookeeper "$CMD"
+gosu zookeeper java $CMD

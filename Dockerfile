@@ -3,7 +3,7 @@
 FROM f21global/java:8
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 
-ENV EXHIBITOR_VER 1.5.5
+ENV EXHIBITOR_VER 1.5.6
 ENV ZOOKEEPER_VER 3.4.7
 
 RUN groupadd zookeeper \
@@ -19,7 +19,7 @@ RUN apt-get install -y ca-certificates maven\
     && cd /tmp/exhibitor \
     && mvn clean package \
     && mkdir -p /opt/exhibitor \
-    && mv /tmp/exhibitor/target/exhibitor-1.0.jar /opt/exhibitor/exhibitor.jar \
+    && mv /tmp/exhibitor/target/exhibitor-1.5.5.jar /opt/exhibitor/exhibitor.jar \
     && rm -rf /tmp/exhibitor \
     && apt-get purge --auto-remove maven -y \
     && mkdir -p /var/lib/zookeeper/data \
