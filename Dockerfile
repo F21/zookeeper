@@ -6,10 +6,12 @@ MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 ENV EXHIBITOR_VER 1.5.5
 ENV ZOOKEEPER_VER 3.4.7
 
-RUN apt-get update \
+RUN groupadd zookeeper \
+    && adduser --system --home /opt/zookeeper --disabled-login --ingroup zookeeper zookeeper \
+    && apt-get update \
     && apt-get install -y wget \
-    && wget -q -O - http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-${ZOOKEEPER_VER}/zookeeper-${ZOOKEEPER_VER}.tar.gz | tar -xzf - -C /opt \
-    && mv /opt/zookeeper-${ZOOKEEPER_VER} /opt/zookeeper
+    && wget -q -O - http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-${ZOOKEEPER_VER}/zookeeper-${ZOOKEEPER_VER}.tar.gz | tar -xzf - -C /opt/zookeeper --strip-components 1 \
+    && chown -R zookeeper:zookeeper /opt/zookeeper
 
 RUN apt-get install -y ca-certificates maven\
     && mkdir -p /tmp/exhibitor \
@@ -20,12 +22,19 @@ RUN apt-get install -y ca-certificates maven\
     && mv /tmp/exhibitor/target/exhibitor-1.0.jar /opt/exhibitor/exhibitor.jar \
     && rm -rf /tmp/exhibitor \
     && apt-get purge --auto-remove maven -y \
-    && mkdir -p /var/lib/zookeeper/data
+    && mkdir -p /var/lib/zookeeper/data \
+    && chown -R zookeeper:zookeeper /opt/exhibitor \
+    && chown -R zookeeper:zookeeper /var/lib/zookeeper
 
-ADD run-exhibitor.sh /opt/exhibitor/run-exhibitor.sh
+RUN arch="$(dpkg --print-architecture)" \
+	&& set -x \
+	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-$arch" \
+	&& chmod +x /usr/local/bin/gosu
+
+ADD run-exhibitor.sh /run-exhibitor.sh
 
 EXPOSE 2181 2888 3888 8080
 
 WORKDIR /opt/exhibitor
 
-CMD ["/opt/exhibitor/run-exhibitor.sh"]
+CMD ["/run-exhibitor.sh"]

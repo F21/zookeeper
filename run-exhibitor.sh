@@ -79,12 +79,4 @@ echo "observer-threshold=${OBSERVER_THRESHOLD:=3}" >> /opt/exhibitor/exhibitor.p
 echo ${AUTO_MANAGE_INSTANCES_FIXED_ENSEMBLE_SIZE:+"auto-manage-instances-fixed-ensemble-size=$AUTO_MANAGE_INSTANCES_FIXED_ENSEMBLE_SIZE"} >> /opt/exhibitor/exhibitor.properties
 echo ${AUTO_MANAGE_INSTANCES_APPLY_ALL_AT_ONCE:+"auto-manage-instances-apply-all-at-once=$AUTO_MANAGE_INSTANCES_APPLY_ALL_AT_ONCE"} >> /opt/exhibitor/exhibitor.properties
 
-trap 'kill -TERM $PID' TERM INT
-
-$CMD &
-PID=$!
-
-wait $PID
-trap - TERM INT
-wait $PID
-exit 0
+exec gosu zookeeper "$CMD"
