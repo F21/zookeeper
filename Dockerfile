@@ -33,8 +33,8 @@ RUN arch="$(dpkg --print-architecture)" \
 
 ADD run-exhibitor.sh /run-exhibitor.sh
 
-EXPOSE 2181 2888 3888 8080
+VOLUME ["/var/lib/zookeeper/data"]
 
-WORKDIR /opt/exhibitor
+EXPOSE 2181 2888 3888 8080
 
 CMD ["/run-exhibitor.sh"]
