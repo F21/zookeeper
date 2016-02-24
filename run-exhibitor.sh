@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CMD="-jar exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"
+CMD="-jar /opt/exhibitor/exhibitor.jar --defaultconfig /opt/exhibitor/exhibitor.properties --hostname $(awk 'NR==1 {print $1}' /etc/hosts)"
 
 if [ "$CONFIGTYPE" = "file" ]; then
 
