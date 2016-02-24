@@ -4,7 +4,7 @@ FROM f21global/java:8
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 
 ENV EXHIBITOR_VER 1.5.6
-ENV ZOOKEEPER_VER 3.4.7
+ENV ZOOKEEPER_VER 3.4.8
 
 RUN groupadd zookeeper \
     && adduser --system --home /opt/zookeeper --disabled-login --ingroup zookeeper zookeeper \
