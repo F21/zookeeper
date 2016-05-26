@@ -7,7 +7,7 @@ if [ "$CONFIGTYPE" = "file" ]; then
     CMD=$CMD" --configtype file"
     CMD=$CMD${FSCONFIGDIR:+" --fsconfigdir $FSCONFIGDIR"}
     CMD=$CMD${FSCONFIGLOCKPREFIX:+" --fsconfiglockprefix $FSCONFIGLOCKPREFIX"}
-    CMD=$CMD${FSCONFIGNAMEX:+" --fsconfigname $FSCONFIGNAME"}
+    CMD=$CMD${FSCONFIGNAME:+" --fsconfigname $FSCONFIGNAME"}
 
     chown -R zookeeper:zookeeper $FSCONFIGDIR
 
