@@ -2,7 +2,7 @@ FROM openjdk:8-jdk-alpine
 MAINTAINER Francis Chuang <francis.chuang@boostport.com>
 
 ENV EXHIBITOR_VER 1.5.6
-ENV ZOOKEEPER_VER 3.4.8
+ENV ZOOKEEPER_VER 3.4.9
 
 RUN apk --no-cache --update add bash ca-certificates gnupg openssl su-exec tar \
  && apk --no-cache --update --repository https://dl-3.alpinelinux.org/alpine/edge/community/ add maven \
@@ -23,7 +23,7 @@ RUN apk --no-cache --update add bash ca-certificates gnupg openssl su-exec tar \
 \
 # Build exhibitor
  && mkdir -p /tmp/exhibitor \
- && wget -O /tmp/exhibitor/pom.xml https://raw.githubusercontent.com/Netflix/exhibitor/v${EXHIBITOR_VER}/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml \
+ && wget -O /tmp/exhibitor/pom.xml https://raw.githubusercontent.com/soabase/exhibitor/v${EXHIBITOR_VER}/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml \
  && cd /tmp/exhibitor \
  && mvn clean package \
  && mv /tmp/exhibitor/target/exhibitor-1.5.5.jar /opt/exhibitor/exhibitor.jar \
